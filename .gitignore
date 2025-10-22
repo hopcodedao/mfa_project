@@ -15,14 +15,16 @@ __pycache__/
 *.pyd
 .Python
 venv/
-.env/
+env/
+.env
 *.env
+*.log
 
 # Django
-*.log
 db.sqlite3
 media/
 logs/
+static/
 
 # IDE
 .idea/
@@ -30,6 +32,10 @@ logs/
 *.swp
 *.swo
 
+# Dependencies
+node_modules/
+
 # Operating System
 .DS_Store
 Thumbs.db
+*.bak
