@@ -137,12 +137,24 @@ class EnrolledClassSerializer(serializers.ModelSerializer):
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            # Không tiết lộ thông tin tài khoản tồn tại hay không
+            # Vẫn trả về thành công nhưng không gửi email
+            pass
+        return value
+
 class PasswordResetConfirmSerializer(serializers.Serializer):
     uidb64 = serializers.CharField(required=True)
     token = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True, write_only=True, min_length=8)
+    confirm_password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, attrs):
+        # Kiểm tra xác nhận mật khẩu
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError('Mật khẩu không khớp.')
+
         try:
             uid = smart_str(urlsafe_base64_decode(attrs['uidb64']))
             self.user = User.objects.get(pk=uid)
@@ -206,4 +218,4 @@ class ScheduleSerializer(serializers.ModelSerializer):
     room = RoomSerializer(read_only=True)  
     class Meta:  
         model = Schedule  
-        fields = '__all__'
+        fields = '__all__'  

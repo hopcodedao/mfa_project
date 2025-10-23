@@ -47,12 +47,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       final response = await _authService.confirmPasswordReset(  
         uidb64: widget.uidb64,  
         token: widget.token,  
-        newPassword: _newPasswordController.text,  
+        newPassword: _newPasswordController.text,
+        confirmPassword: _confirmPasswordController.text,
       );  
   
-      final responseData = json.decode(response.body);  
-  
-      if (response.statusCode == 200) {  
+      if (response['success'] != null) {  
         setState(() {  
           _isSuccess = true;  
         });  
@@ -66,9 +65,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             );  
           }  
         });  
-      } else {  
-        throw Exception(responseData.values.first.first ?? 'Link không hợp lệ hoặc đã hết hạn');  
-      }  
+      }
     } catch (e) {  
       setState(() {  
         _errorMessage = e.toString().replaceAll('Exception: ', '');  

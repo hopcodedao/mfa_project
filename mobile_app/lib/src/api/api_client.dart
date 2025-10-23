@@ -4,11 +4,11 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const String BASE_URL = 'http://172.20.10.3:8000/api/v1/';
+import 'package:mobile_app/src/constants/app_constants.dart';
 
 class ApiClient {
   final _storage = const FlutterSecureStorage();
-  static const Duration _timeout = Duration(seconds: 30);
+  static const Duration _timeout = Duration(seconds: AppConstants.requestTimeout);
   static const int _maxRetries = 3;
 
   Future<Map<String, String>> _getHeaders({bool includeAuth = true}) async {
@@ -56,7 +56,7 @@ class ApiClient {
   }
 
   Future<http.Response> get(String endpoint, {bool includeAuth = true}) async {
-    final url = Uri.parse('$BASE_URL$endpoint');
+    final url = Uri.parse('${AppConstants.baseUrl}$endpoint');
     final headers = await _getHeaders(includeAuth: includeAuth);
 
     return _makeRequest(() => http.get(url, headers: headers));
@@ -67,7 +67,7 @@ class ApiClient {
     Map<String, dynamic> data, {
     bool includeAuth = true,
   }) async {
-    final url = Uri.parse('$BASE_URL$endpoint');
+    final url = Uri.parse('${AppConstants.baseUrl}$endpoint');
     final headers = await _getHeaders(includeAuth: includeAuth);
 
     return _makeRequest(
@@ -80,7 +80,7 @@ class ApiClient {
     Map<String, dynamic> data, {
     bool includeAuth = true,
   }) async {
-    final url = Uri.parse('$BASE_URL$endpoint');
+    final url = Uri.parse('${AppConstants.baseUrl}$endpoint');
     final headers = await _getHeaders(includeAuth: includeAuth);
 
     return _makeRequest(
@@ -92,7 +92,7 @@ class ApiClient {
     String endpoint, {
     bool includeAuth = true,
   }) async {
-    final url = Uri.parse('$BASE_URL$endpoint');
+    final url = Uri.parse('${AppConstants.baseUrl}$endpoint');
     final headers = await _getHeaders(includeAuth: includeAuth);
 
     return _makeRequest(() => http.delete(url, headers: headers));

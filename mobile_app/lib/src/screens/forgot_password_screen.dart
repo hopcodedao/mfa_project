@@ -32,13 +32,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });  
   
     try {  
-      await _authService.requestPasswordReset(_emailController.text);  
-      setState(() {  
-        _isEmailSent = true;  
-      });  
+      final response = await _authService.requestPasswordReset(_emailController.text);
+      if (response['success'] != null) {
+        setState(() {  
+          _isEmailSent = true;  
+        });
+      } else {
+        throw Exception('Không nhận được phản hồi từ server');
+      }
     } catch (e) {  
       setState(() {  
-        _errorMessage = 'Lỗi gửi email: ${e.toString()}';  
+        _errorMessage = e.toString().replaceAll('Exception: ', '');
       });  
     } finally {  
       setState(() {  
