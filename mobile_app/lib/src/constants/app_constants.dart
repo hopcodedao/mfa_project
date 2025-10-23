@@ -5,7 +5,7 @@ class AppConstants {
   static const String universityName = 'Trường ĐH Kỹ thuật - Công nghệ Cần Thơ';  
     
   // API  
-  static const String baseUrl = 'http://10.10.3.219:8000/api/v1/';  
+  static const String baseUrl = 'http://172.20.10.3:8000/api/v1/';  
   static const int requestTimeout = 30; // seconds  
     
   // Storage Keys  

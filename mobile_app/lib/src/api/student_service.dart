@@ -5,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'api_client.dart';
 import 'package:http_parser/http_parser.dart';
 import '../services/cache_service.dart';
-import '../constants/app_constants.dart';
 
 class StudentService {
   final _storage = const FlutterSecureStorage();
@@ -22,7 +21,7 @@ class StudentService {
         throw Exception('Không tìm thấy token xác thực');
       }
 
-      final url = Uri.parse('${AppConstants.baseUrl}user/my-schedules/?filter=$filter');
+      final url = Uri.parse('${BASE_URL}user/my-schedules/?filter=$filter');
       print('📡 Gọi API: $url');
 
       final response = await http
@@ -83,7 +82,7 @@ class StudentService {
 
   Future<http.StreamedResponse> registerFace(File imageFile) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}user/register-face/');
+    final url = Uri.parse('${BASE_URL}user/register-face/');
 
     final request = http.MultipartRequest('POST', url);
     final filename = imageFile.path.split('/').last;
@@ -111,7 +110,7 @@ class StudentService {
     String? wifiSsid, // [THÊM] Tham số mới, có thể null
   }) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}attendance/check-in/');
+    final url = Uri.parse('${BASE_URL}attendance/check-in/');
     final request = http.MultipartRequest('POST', url);
 
     request.headers['Authorization'] = 'Bearer $token';
@@ -140,7 +139,7 @@ class StudentService {
   // Lấy lịch sử điểm danh của sinh viên cho một lớp
   Future<List<dynamic>> getMyAttendanceHistory(int classId) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}classes/$classId/my-attendance/');
+    final url = Uri.parse('${BASE_URL}classes/$classId/my-attendance/');
     final response = await http.get(
       url,
       headers: {'Authorization': 'Bearer $token'},
@@ -159,7 +158,7 @@ class StudentService {
     required File proofImage,
   }) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}absence-requests/');
+    final url = Uri.parse('${BASE_URL}absence-requests/');
     final request = http.MultipartRequest('POST', url);
 
     request.headers['Authorization'] = 'Bearer $token';
@@ -181,7 +180,7 @@ class StudentService {
         throw Exception('Không tìm thấy token xác thực');
       }
 
-      final url = Uri.parse('${AppConstants.baseUrl}user/my-enrollments/');
+      final url = Uri.parse('${BASE_URL}user/my-enrollments/');
       print('📡 Gọi API: $url');
 
       final response = await http
@@ -244,7 +243,7 @@ class StudentService {
     required String newPassword,
   }) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}auth/change-password/');
+    final url = Uri.parse('${BASE_URL}auth/change-password/');
     final response = await http.post(
       url,
       headers: {
@@ -261,7 +260,7 @@ class StudentService {
 
   Future<Map<String, dynamic>> getAttendanceStats() async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}user/attendance-stats/');
+    final url = Uri.parse('${BASE_URL}user/attendance-stats/');
     final response = await http.get(
       url,
       headers: {'Authorization': 'Bearer $token'},
@@ -275,7 +274,7 @@ class StudentService {
 
   Future<List<dynamic>> getUpcomingSchedules() async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}user/upcoming-schedules/');
+    final url = Uri.parse('${BASE_URL}user/upcoming-schedules/');
     final response = await http.get(
       url,
       headers: {'Authorization': 'Bearer $token'},
@@ -289,7 +288,7 @@ class StudentService {
 
   Future<http.Response> updateProfile(Map<String, dynamic> profileData) async {
     final token = await _storage.read(key: 'accessToken');
-    final url = Uri.parse('${AppConstants.baseUrl}user/profile/');
+    final url = Uri.parse('${BASE_URL}user/profile/');
     return await http.put(
       url,
       headers: {

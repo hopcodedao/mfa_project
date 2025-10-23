@@ -2,7 +2,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../constants/app_constants.dart';
 import 'api_client.dart';
 
 class AuthService {
@@ -12,16 +11,10 @@ class AuthService {
   // 1. Đăng nhập
   Future<Map<String, dynamic>> login(String userCode, String password) async {
     // API đăng nhập không cần token nên có thể gọi trực tiếp
-    // Send both 'username' and 'user_code' to be compatible with server's
-    // custom USERNAME_FIELD='user_code' and the default SimpleJWT serializer
     final response = await http.post(
-      Uri.parse('${AppConstants.baseUrl}token/'),
+      Uri.parse('${BASE_URL}token/'),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'username': userCode,
-        'user_code': userCode,
-        'password': password,
-      }),
+      body: json.encode({'user_code': userCode, 'password': password}),
     );
 
     if (response.statusCode == 200) {
@@ -56,50 +49,31 @@ class AuthService {
   }
 
   // 4. Gửi yêu cầu Reset Mật khẩu
-  Future<Map<String, dynamic>> requestPasswordReset(String email) async {
+  Future<http.Response> requestPasswordReset(String email) {
     // API này không cần token
-    final response = await http.post(
-      Uri.parse('${AppConstants.baseUrl}auth/password-reset/'),
+    return http.post(
+      Uri.parse('${BASE_URL}auth/password-reset/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email}),
     );
-
-    final responseData = json.decode(response.body);
-    if (response.statusCode != 200) {
-      throw Exception(responseData['error'] ?? 'Không thể gửi yêu cầu đặt lại mật khẩu');
-    }
-    return responseData;
   }
 
   // 5. Xác nhận Mật khẩu mới
-  Future<Map<String, dynamic>> confirmPasswordReset({
+  Future<http.Response> confirmPasswordReset({
     required String uidb64,
     required String token,
     required String newPassword,
-    required String confirmPassword,
-  }) async {
-    // Kiểm tra mật khẩu khớp nhau
-    if (newPassword != confirmPassword) {
-      throw Exception('Mật khẩu không khớp');
-    }
-
+  }) {
     // API này không cần token
-    final response = await http.post(
-      Uri.parse('${AppConstants.baseUrl}auth/password-reset/confirm/'),
+    return http.post(
+      Uri.parse('${BASE_URL}auth/password-reset/confirm/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'uidb64': uidb64,
         'token': token,
         'new_password': newPassword,
-        'confirm_password': confirmPassword,
       }),
     );
-
-    final responseData = json.decode(response.body);
-    if (response.statusCode != 200) {
-      throw Exception(responseData['error'] ?? 'Không thể đặt lại mật khẩu');
-    }
-    return responseData;
   }
 
   // 6. Đổi mật khẩu khi đã đăng nhập
@@ -153,7 +127,7 @@ class AuthService {
 
       // 3. Gửi idToken lên backend của chúng ta để xác thực và lấy token của hệ thống
       final response = await http.post(
-        Uri.parse('${AppConstants.baseUrl}auth/google-login/'),
+        Uri.parse('${BASE_URL}auth/google-login/'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'token': idToken}),
       );
@@ -186,7 +160,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> refreshToken(String refreshToken) async {
     final response = await http.post(
-      Uri.parse('${AppConstants.baseUrl}token/refresh/'),
+      Uri.parse('${BASE_URL}token/refresh/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'refresh': refreshToken}),
     );
