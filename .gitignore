@@ -26,6 +26,11 @@ media/
 logs/
 static/
 
+# Secrets
+# Do not commit credentials or private keys
+firebase-credentials.json
+mfa_project/firebase-credentials.json
+
 # IDE
 .idea/
 .vscode/
